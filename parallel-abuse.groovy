@@ -1,9 +1,10 @@
 // Pipeline script that will exhibit painful behavior if you handle parallels inefficiently
 // Or don't ensure we only visit each node once when iterating.  Generates ~1100 nodes.
 // If we don't avoid visiting nodes multiple times, walking through this will require ~20*150*20*3*3 visits = ~540000
-stage 'before'
-for (int i=0; i<150; i++) {
-    echo "running the $i step before parallel here"
+stage ('before') {
+    for (int i=0; i<150; i++) {
+        echo "running the $i step before parallel here"
+    }
 }
 
 int branchCount = 20;
@@ -21,15 +22,19 @@ for (int i=0; i<branchCount; i++) {
 parallel branches
 parallel branches
 
-stage 'canfail'
-//checkpoint 'before-fail'  // Comment back in to test checkpoint restore
-if (true) {
-    error("Random failure")
-} else {
-    echo 'random pass'
+stage ('canfail') {
+    // boolean randomizer = nextBoolean()
+    // echo "Randomizer set to $randomizer"
+    // checkpoint 'before-fail'  // Comment back in to test checkpoint restore
+    if (!randomizer) {
+        error("Random failure")
+    } else {
+        echo 'random pass'
+    }
 }
 
-stage 'after'
-for (int i=0; i<30; i++) {
-    echo "running the $i step here"
+stage ('after') {
+    for (int i=0; i<30; i++) {
+        echo "running the $i step here"
+    }
 }
